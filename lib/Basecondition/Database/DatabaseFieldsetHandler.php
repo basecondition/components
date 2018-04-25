@@ -38,6 +38,7 @@ class DatabaseFieldsetHandler
                 $select[] = $result['select'];
             }
         }
+
         return array('update'=>$update, 'create'=>$create, 'select'=>$select);
     }
 
@@ -52,6 +53,9 @@ class DatabaseFieldsetHandler
         if (array_key_exists('type', $field) && array_key_exists('name', $field)) {
             // for now we check only the type
             if ($column = DatabaseSchemaCreator::isInColumnList($columns, $field['name'])) {
+                if ($field['name'] == 'prio') {
+                    $field['type'] = 'int';
+                }
                 switch ($field['type']) {
                     case 'bool':
                         $type = 'tinyint';
