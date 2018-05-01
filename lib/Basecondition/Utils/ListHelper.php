@@ -144,7 +144,7 @@ class ListHelper
      * @return string
      * @author Joachim Doerr
      */
-    public static function wrapList($message, $list, $class = 'basecondition-list', $data = '')
+    public static function wrapList($message, $list, $class = 'base-list', $data = '')
     {
         return '<div class="'.$class.'" '.$data.'>' . $message . $list->show() . '</div>';
     }

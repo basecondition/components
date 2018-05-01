@@ -387,7 +387,7 @@ class FormHelper
      * @return string
      * @author Joachim Doerr
      */
-    public static function wrapForm($message, $form, $class = 'basecondition-form', $data = '')
+    public static function wrapForm($message, $form, $class = 'base-form', $data = '')
     {
         return '<div class="'.$class.'" '.$data.'>' . $message . $form->show() . '</div>';
     }
