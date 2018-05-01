@@ -144,6 +144,7 @@ class MBlockHelper
                     $cd = array_pop($d);
                     if ($cd == $type) {
                         $item['mblock_definition'] = $code;
+                        $headline = $name;
                     }
                 }
             }
@@ -152,15 +153,20 @@ class MBlockHelper
             if (isset($item_clone['mblock_definition'][$type]['search_schema'])) {
                 $item['mblock_definition'] = $item_clone['mblock_definition'][$type]['search_schema'];
             }
-//            dump($item_clone);
             $settings = self::getSettings($item_clone, $type);
 
             // TODO MBlock headline
             // TODO collapse by settings
             // TODO collapse open with name
-            $content .= '<h6>'.$item_clone['mblock_definition'][$type]['name'].'</h6>';
+
+            if (isset($item_clone['mblock_definition'][$type]['name'])) {
+                $content .= '<h6>' . $item_clone['mblock_definition'][$type]['name'] . '</h6>';
+            } else {
+                $content .= '<h6>' . $headline . '</h6>';
+            }
 
             $content .= $view->createMBlockFieldset($item, $type, $settings);
+
             // TODO collapse close
         }
         $view->form->addRawField('<div class="'.$baseClass.'_mblock mblock_set_content" data-unique_id="' . $uid . '">' . $content . '</div>');
