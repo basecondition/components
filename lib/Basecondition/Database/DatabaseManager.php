@@ -19,12 +19,22 @@ class DatabaseManager
 {
     const SEARCH_SCHEMA = '*/definitions/default/%s.yml';
 
+    /**
+     * @param $addonName
+     * @param $searchPath
+     * @param string $searchSchema
+     * @author Joachim Doerr
+     */
     public static function provideSchema($addonName, $searchPath, $searchSchema = self::SEARCH_SCHEMA)
     {
         $definitions = self::getDefinitions($addonName, $searchPath, $searchSchema);
 
         if (sizeof($definitions) > 0)
-            foreach ($definitions as $definition)
+            foreach ($definitions as $definition) {
+
+                if ($definition['cached'] === true)
+                    continue;
+
                 if (array_key_exists('data', $definition)) {
                     // table name
                     $tableName = rex::getTablePrefix() . $addonName . '_' . pathinfo($definition['search_schema'], PATHINFO_FILENAME);
@@ -56,6 +66,7 @@ class DatabaseManager
                     if (sizeof($update) > 0)
                         DatabaseSchemaCreator::changeColumnsInTable($update, $tableName);
                 }
+            }
     }
 
     /**
