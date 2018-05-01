@@ -423,7 +423,7 @@ class FormView
         $mblockView->initForm();
         $mblockView->addFieldElements(); // add field elements by defaults
 
-        return mblock::show($table, $mblockView->showElements(), array_merge(array('min'=>0), $settings));
+        return MBlock::show($table, $mblockView->showElements(), array_merge(array('min'=>0), $settings));
     }
 
     /**
