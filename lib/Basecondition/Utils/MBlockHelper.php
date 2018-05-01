@@ -52,9 +52,10 @@ class MBlockHelper
      * @param int $id
      * @param array $active
      * @param string $uid
+     * @param string $baseClass
      * @author Joachim Doerr
      */
-    public static function addMBlockSetNavigation(mblock_rex_form $form, array $item, array $urlParameters, $id, array $active, $uid)
+    public static function addMBlockSetNavigation(mblock_rex_form $form, array $item, array $urlParameters, $id, array $active, $uid, $baseClass = 'base')
     {
         // create navigation
         $navigation = array();
@@ -101,7 +102,7 @@ class MBlockHelper
         $item['mblock_label'] = ViewHelper::getLabel($item, 'label');
 
         if (!isset($item['mblock_label'])) {
-            $item['mblock_label'] = rex_i18n::msg('store_add_mblock_block');
+            $item['mblock_label'] = rex_i18n::msg('add_mblock_block');
         }
 
         if (!isset($item['icon'])) {
@@ -112,7 +113,7 @@ class MBlockHelper
 
         // print to form
         $form->addRawField('
-            <div class="store_mblock mblock_set_nav" data-unique_id="' . $uid . '">
+            <div class="'.$baseClass.'_mblock mblock_set_nav" data-unique_id="' . $uid . '">
                 <div class="dropdown btn-block">
                     <button class="btn btn-white btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                         <i class="rex-icon '.$item['icon'].'"></i> ' . $item['mblock_label'] . ' <span class="caret"></span></button>
@@ -127,10 +128,11 @@ class MBlockHelper
      * @param array $item
      * @param array $active
      * @param string $uid
+     * @param string $baseClass
      * @internal param array $active
      * @author Joachim Doerr
      */
-    public static function addMBlockSetFieldset(FormView $view, array $item, array $active, $uid)
+    public static function addMBlockSetFieldset(FormView $view, array $item, array $active, $uid, $baseClass = 'base')
     {
         $content = '';
         $item_clone = $item;
@@ -161,7 +163,7 @@ class MBlockHelper
             $content .= $view->createMBlockFieldset($item, $type, $settings);
             // TODO collapse close
         }
-        $view->form->addRawField('<div class="store_mblock mblock_set_content" data-unique_id="' . $uid . '">' . $content . '</div>');
+        $view->form->addRawField('<div class="'.$baseClass.'_mblock mblock_set_content" data-unique_id="' . $uid . '">' . $content . '</div>');
 
     }
 

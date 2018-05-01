@@ -146,14 +146,15 @@ class FormHelper
      * @param string $type
      * @param null $key
      * @param null $curClang
+     * @param string $baseClass
      * @author Joachim Doerr
      */
-    public static function addLangTabs(rex_form $form, $type, $key = null, $curClang = null)
+    public static function addLangTabs(rex_form $form, $type, $key = null, $curClang = null, $baseClass = 'base')
     {
         if (rex_clang::count() > 1) {
             switch ($type) {
                 case 'wrapper':
-                    $form->addRawField('<div class="store-clangtabs"><ul class="nav nav-tabs" role="tablist">');
+                    $form->addRawField('<div class="'.$baseClass.'-clangtabs"><ul class="nav nav-tabs" role="tablist">');
                     foreach (rex_clang::getAll() as $clang) {
                         $active = '';
                         if ($key == $clang->getId()) {
@@ -161,7 +162,7 @@ class FormHelper
                         }
                         $form->addRawField("<li role=\"presentation\" class=\"$active\"><a href=\"#lang{$clang->getId()}\" aria-controls=\"home\" role=\"tab\" data-toggle=\"tab\">{$clang->getName()}</a></li>");
                     }
-                    $form->addRawField('</ul><div class="tab-content store-tabform">');
+                    $form->addRawField('</ul><div class="tab-content '.$baseClass.'-tabform">');
                     break;
 
                 case 'close_wrapper':
@@ -200,14 +201,15 @@ class FormHelper
      * @param null $key
      * @param null $curKey
      * @param null $nav
+     * @param string $baseClass
      * @author Joachim Doerr
      */
-    public static function addTabs(rex_form $form, $type, $key = null, $curKey = null, $nav = null)
+    public static function addTabs(rex_form $form, $type, $key = null, $curKey = null, $nav = null, $baseClass = 'base')
     {
         if (rex_clang::count() > 1) {
             switch ($type) {
                 case 'wrapper':
-                    $form->addRawField('<div class="store-tabs"><ul class="nav nav-tabs" role="tablist">');
+                    $form->addRawField('<div class="'.$baseClass.'-tabs"><ul class="nav nav-tabs" role="tablist">');
                     if (is_array($nav)) {
                         foreach ($nav as $nKey => $value) {
                             $active = '';
@@ -217,7 +219,7 @@ class FormHelper
                             $form->addRawField("<li role=\"presentation\" class=\"$active\"><a href=\"#pnl{$nKey}\" aria-controls=\"home\" role=\"tab\" data-toggle=\"tab\">{$value}</a></li>");
                         }
                     }
-                    $form->addRawField('</ul><div class="tab-content store-tabform">');
+                    $form->addRawField('</ul><div class="tab-content '.$baseClass.'-tabform">');
                     break;
                 case 'navigation':
                     break;
@@ -255,15 +257,16 @@ class FormHelper
      * @param rex_form $form
      * @param $type
      * @param string $name
+     * @param string $baseClass
      * @author Joachim Doerr
      */
-    public static function addCollapsePanel(rex_form $form, $type, $name = '')
+    public static function addCollapsePanel(rex_form $form, $type, $name = '', $baseClass = 'base')
     {
         $in = '';
         switch ($type) {
             case 'wrapper':
                 $keya = uniqid('a');
-                $form->addRawField("<div class=\"panel-group store-panel\" id=\"$keya\">");
+                $form->addRawField("<div class=\"panel-group '.$baseClass.'-panel\" id=\"$keya\">");
                 break;
 
             case 'close_wrapper':
@@ -323,8 +326,8 @@ class FormHelper
 
             $element->addOption('', 1);
             $element->setAttribute('data-toggle', 'toggle');
-            $element->setAttribute('data-on', '<i class=\'rex-icon rex-icon-online\'> ' . rex_i18n::msg('store_online'));
-            $element->setAttribute('data-off', '<i class=\'rex-icon rex-icon-offline\'> ' . rex_i18n::msg('store_offline'));
+            $element->setAttribute('data-on', '<i class=\'rex-icon rex-icon-online\'> ' . rex_i18n::msg('clang_online'));
+            $element->setAttribute('data-off', '<i class=\'rex-icon rex-icon-offline\'> ' . rex_i18n::msg('clang_offline'));
             $element->setAttribute('data-width', 160);
             $element->setAttribute('data-onstyle', 'info');
             $element->setAttribute('class', 'bootstrap-toggle');
