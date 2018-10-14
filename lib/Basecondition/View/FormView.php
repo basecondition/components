@@ -137,10 +137,6 @@ class FormView
             $this->form->addParam('id', $this->id);
         }
 
-        $this->form->setApplyUrl(rex_url::currentBackendPage());
-        $this->form->setEditMode(($this->id > 0));
-        $this->form->addParam('start', rex_request::request('start', 'int'));
-
         if (sizeof($this->urlParameters) > 0) {
             foreach ($this->urlParameters as $parameter => $value) {
                 if (is_array($value)) {
@@ -149,6 +145,12 @@ class FormView
                     $this->form->addParam($parameter, $value);
                 }
             }
+        }
+
+        $this->form->setEditMode(($this->id > 0));
+
+        if (!array_key_exists('start', $this->urlParameters)) {
+            $this->form->addParam('start', rex_request::request('start', 'int'));
         }
     }
 
@@ -259,6 +261,7 @@ class FormView
      * @param array $panel
      * @param null $clang
      * @author Joachim Doerr
+     * @throws \rex_exception
      */
     public function addPanelFieldset(array $panel, $clang = null)
     {
@@ -280,16 +283,13 @@ class FormView
      * @param array $fieldset
      * @param null $clang
      * @author Joachim Doerr
+     * @throws \rex_exception
      */
     public function addDefaultFieldset(array $fieldset, $clang = null)
     {
         // field row
         $fieldRow = false;
         $fieldColumn = false;
-
-//        echo '<pre>';
-//        print_r($fieldset);
-//        echo '</pre>';
 
         foreach ($fieldset as $item) {
             if (is_array($item) && array_key_exists('field_row', $item) && $item['field_row'] == 'open') {
