@@ -31,6 +31,7 @@ class FormHelper
      * @param null $id
      * @return mixed|null|rex_form_element|rex_form_widget_media_element|rex_form_widget_medialist_element|rex_form_prio_element
      * @author Joachim Doerr
+     * @throws \rex_exception
      */
     public static function addFormElementByField(rex_form $form, array $item, $id = null)
     {
@@ -109,6 +110,14 @@ class FormHelper
         // add style
         if (is_object($element) && array_key_exists('form_style', $item)) {
             $element->setAttribute('style', $item['form_style']);
+        }
+        // add data
+        if (is_object($element) && array_key_exists('data', $item) && is_array($item['data']) && sizeof($item['data']) > 0) {
+            foreach ($item['data'] as $data) {
+                foreach ($data as $key => $val) {
+                    $element->setAttribute('data-' . $key, $val);
+                }
+            }
         }
 
         return $element;
@@ -206,39 +215,37 @@ class FormHelper
      */
     public static function addTabs(rex_form $form, $type, $key = null, $curKey = null, $nav = null, $baseClass = 'base')
     {
-        if (rex_clang::count() > 1) {
-            switch ($type) {
-                case 'wrapper':
-                    $form->addRawField('<div class="'.$baseClass.'-tabs"><ul class="nav nav-tabs" role="tablist">');
-                    if (is_array($nav)) {
-                        foreach ($nav as $nKey => $value) {
-                            $active = '';
-                            if ($key == $nKey) {
-                                $active = ' active';
-                            }
-                            $form->addRawField("<li role=\"presentation\" class=\"$active\"><a href=\"#pnl{$nKey}\" aria-controls=\"home\" role=\"tab\" data-toggle=\"tab\">{$value}</a></li>");
+        switch ($type) {
+            case 'wrapper':
+                $form->addRawField('<div class="'.$baseClass.'-tabs"><ul class="nav nav-tabs" role="tablist">');
+                if (is_array($nav)) {
+                    foreach ($nav as $nKey => $value) {
+                        $active = '';
+                        if ($key == $nKey) {
+                            $active = ' active';
                         }
+                        $form->addRawField("<li role=\"presentation\" class=\"$active\"><a href=\"#pnl{$nKey}\" aria-controls=\"home\" role=\"tab\" data-toggle=\"tab\">{$value}</a></li>");
                     }
-                    $form->addRawField('</ul><div class="tab-content '.$baseClass.'-tabform">');
-                    break;
-                case 'navigation':
-                    break;
-                case 'close_wrapper':
-                    $form->addRawField('</div></div>');
-                    break;
+                }
+                $form->addRawField('</ul><div class="tab-content '.$baseClass.'-tabform">');
+                break;
+            case 'navigation':
+                break;
+            case 'close_wrapper':
+                $form->addRawField('</div></div>');
+                break;
 
-                case 'inner_wrapper':
-                    $active = '';
-                    if ($key == $curKey) {
-                        $active = ' active';
-                    }
-                    $form->addRawField("\n\n\n<div id=\"pnl$key\" role=\"tabpanel\" class=\"tab-pane $active\">\n");
-                    break;
+            case 'inner_wrapper':
+                $active = '';
+                if ($key == $curKey) {
+                    $active = ' active';
+                }
+                $form->addRawField("\n\n\n<div id=\"pnl$key\" role=\"tabpanel\" class=\"tab-pane $active\">\n");
+                break;
 
-                case 'close_inner_wrapper':
-                    $form->addRawField('</div>');
-                    break;
-            }
+            case 'close_inner_wrapper':
+                $form->addRawField('</div>');
+                break;
         }
     }
 
@@ -250,7 +257,7 @@ class FormHelper
     public static function closeTabs(rex_form $form, $type)
     {
         // close lang tabs
-        self::addLangTabs($form, $type);
+        self::addTabs($form, $type);
     }
 
     /**
