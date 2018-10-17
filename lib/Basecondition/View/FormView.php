@@ -48,6 +48,11 @@ class FormView
     /**
      * @var string
      */
+    public $tableBaseName;
+
+    /**
+     * @var string
+     */
     public $searchFile;
 
     /**
@@ -102,6 +107,7 @@ class FormView
         $this->legend = $legend;
         $this->debug = $debug;
         $this->urlParameters = $urlParameters;
+        $this->tableBaseName = $addonKey . '_' . $searchFile;
 
         $this->tableKey = rex::getTablePrefix() . $addonKey . '_' . $searchFile;
 
@@ -175,7 +181,7 @@ class FormView
 
                     $uId = uniqid();
                     $this->items[$key]['tab_unique_id'] = $uId;
-                    $tabNav[$uId] = ViewHelper::getLabel($item);
+                    $tabNav[$uId] = ViewHelper::getLabel($item, 'label', $this->tableBaseName);
                 }
             }
 
@@ -268,7 +274,7 @@ class FormView
         if (array_key_exists('panel_name', $panel) && array_key_exists('fields', $panel)) {
             // ADD PANEL
             FormHelper::addCollapsePanel($this->form, 'wrapper');
-            FormHelper::addCollapsePanel($this->form, 'inner_wrapper', ViewHelper::getLabel($panel));
+            FormHelper::addCollapsePanel($this->form, 'inner_wrapper', ViewHelper::getLabel($panel, 'label', $this->tableBaseName));
 
             // panel lang fields
             $this->addDefaultFieldset($panel['fields'], $clang);
@@ -345,7 +351,7 @@ class FormView
             }
 
             // set element for add more...
-            $element = FormHelper::addFormElementByField($this->form, $item, $this->id);
+            $element = FormHelper::addFormElementByField($this->form, $item, $this->id, $this->tableBaseName);
 
 //            // TODO validation...
 //            if ($element instanceof rex_form_element) {
@@ -355,7 +361,7 @@ class FormView
 
 
             // set element properties by item array
-            FormHelper::setElementProperties($element, $item);
+            FormHelper::setElementProperties($element, $item, $this->tableBaseName);
         }
 
         if ($fieldColumn) {
@@ -384,7 +390,7 @@ class FormView
 
         $uid = uniqid();
         // create navigation
-        MBlockHelper::addMBlockSetNavigation($this->form, $item, $this->urlParameters, $this->id, $active, $uid);
+        MBlockHelper::addMBlockSetNavigation($this->form, $item, $this->urlParameters, $this->id, $active, $uid, 'base', $this->tableBaseName);
         // create mblock fieldsets
         MBlockHelper::addMBlockSetFieldset($this, $item, $active, $uid);
     }
