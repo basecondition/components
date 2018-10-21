@@ -11,6 +11,7 @@
 namespace Basecondition\Utils;
 
 
+use rex;
 use rex_clang;
 use rex_form_element;
 use rex_form_prio_element;
@@ -81,6 +82,47 @@ class FormHelper
                     $element = $form->addPrioField($name);
                     $element->setLabelField($item['form_prio_label']);
                     $element->setAttribute('class', 'selectpicker form-control');
+                    return $element;
+
+                case 'multipleselect':
+                case 'multiselect':
+                case 'multiple_select':
+                case 'multi_select':
+                case 'multipleSelect':
+                case 'multiSelect':
+                    $item['multiple'] = true;
+                case 'select':
+                    /** @var rex_form_select_element $element */
+                    $element = $form->addSelectField($name);
+                    $select = $element->getSelect();
+                    if ($item['multiple']) {
+                        $select->setMultiple($item['multiple']);
+                    }
+                    if (isset($item['form_select_options'])) {
+                        foreach ($item['form_select_options'] as $key => $value) {
+                            $select->addOption($value, $key);
+                        }
+                    }
+                    if ((isset($item['form_select_sql_table']) or isset($item['form_select_sql_table_callback'])) && isset($item['form_select_sql_select'])) {
+                        if (strpos($item['form_select_sql_table'], '::') !== false) {
+                            $item['form_select_sql_table_constant'] = $item['form_select_sql_table'];
+                        }
+                        if (isset($item['form_select_sql_table_callback'])) {
+                            $item['form_select_sql_table'] = call_user_func($item['form_select_sql_table_callback']);
+                        }
+                        if (isset($item['form_select_sql_table_constant'])) {
+                            $item['form_select_sql_table'] = constant($item['form_select_sql_table_constant']);
+                        }
+                        $prefix = rex::getTablePrefix();
+                        if (isset($item['form_select_sql_table_prefix'])) {
+                            $prefix = $item['form_select_sql_table_prefix'];
+                        }
+                        $item['form_select_sql_where'] = (isset($item['form_select_sql_where'])) ? ' WHERE ' . $item['form_select_sql_where'] : '';
+                        $select->addSqlOptions("SELECT {$item['form_select_sql_select']} FROM {$prefix}{$item['form_select_sql_table']} {$item['form_select_sql_where']}");
+                    }
+                    if (isset($item['form_select_sql'])) {
+                        $select->addSqlOptions($item['form_select_sql']);
+                    }
                     return $element;
 
                 default:
@@ -320,7 +362,7 @@ class FormHelper
         $available = false;
 
         foreach (rex_view::getJsFiles() as $jsFile) {
-            if (strpos($jsFile, 'bootstrap-multiselect') !== false) {
+            if (strpos($jsFile, 'basecondition-multiselect') !== false) {
                 $available = true;
                 break;
             }
@@ -335,7 +377,7 @@ class FormHelper
             }
 
             $element->addOption('', 1);
-            $element->setAttribute('data-toggle', 'toggle');
+            $element->setAttribute('data-bsc-toggle', 'toggle');
             $element->setAttribute('data-on', '<i class=\'rex-icon rex-icon-online\'> ' . rex_i18n::msg('clang_online'));
             $element->setAttribute('data-off', '<i class=\'rex-icon rex-icon-offline\'> ' . rex_i18n::msg('clang_offline'));
             $element->setAttribute('data-width', 160);
