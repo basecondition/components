@@ -1,0 +1,147 @@
+/**
+ * @package basecondition/components
+ * @author Joachim Doerr
+ * @copyright (C) mail@doerr-softwaredevelopment.com
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+span.bsc-multiselect-native-select {
+    position: relative
+}
+
+span.bsc-multiselect-native-select select {
+    border: 0 !important;
+    clip: rect(0 0 0 0) !important;
+    height: 1px !important;
+    margin: -1px -1px -1px -3px !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    position: absolute !important;
+    width: 1px !important;
+    left: 50%;
+    top: 30px
+}
+
+.bsc-multiselect-container {
+    position: absolute;
+    list-style-type: none;
+    margin: 0;
+    padding: 0
+}
+
+.bsc-multiselect-container .input-group {
+    margin: 5px
+}
+
+.bsc-multiselect-container > li {
+    padding: 0
+}
+
+.bsc-multiselect-container > li > a.bsc-multiselect-all label {
+    font-weight: 700
+}
+
+.bsc-multiselect-container > li.bsc-multiselect-group label {
+    margin: 0;
+    padding: 3px 20px 3px 20px;
+    height: 100%;
+    font-weight: 700
+}
+
+.bsc-multiselect-container > li.bsc-multiselect-group-clickable label {
+    cursor: pointer
+}
+
+.bsc-multiselect-container > li > a {
+    padding: 0
+}
+
+.bsc-multiselect-container > li > a > label {
+    margin: 0;
+    height: 100%;
+    cursor: pointer;
+    font-weight: 400;
+    padding: 3px 20px 3px 40px
+}
+
+.bsc-multiselect-container > li > a > label.radio, .bsc-multiselect-container > li > a > label.checkbox {
+    margin: 0
+}
+
+.bsc-multiselect-container > li > a > label > input[type=checkbox] {
+    margin-bottom: 5px
+}
+
+.btn-group > .btn-group:nth-child(2) > .bsc-multiselect.btn {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px
+}
+
+.form-inline .bsc-multiselect-container label.checkbox, .form-inline .bsc-multiselect-container label.radio {
+    padding: 3px 20px 3px 40px
+}
+
+.form-inline .bsc-multiselect-container li a label.checkbox input[type=checkbox], .form-inline .bsc-multiselect-container li a label.radio input[type=radio] {
+    margin-left: -20px;
+    margin-right: 0
+}
+
+.rex-form-group:not(.rex-form-group-vertical) > dd .bsc-multiselect-container .checkbox {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.bsc-multiselect-native-select .btn-group,
+.bsc-multiselect-native-select button {
+    width: 100%;
+}
+.bsc-multiselect-native-select .btn {
+    text-align: left;
+}
+
+.bsc-multiselect-container.checkbox-list {
+    position: inherit;
+    padding: 5px;
+    margin: 2px 0;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 4px;
+}
+
+.bsc-multiselect-container.checkbox-list > li > .input-group {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.bsc-multiselect-container.checkbox-list > li label.checkbox {
+    padding-left: 28px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.bsc-multiselect-container.checkbox-list > li {
+    padding: 0 2px;
+    margin: 0;
+}
+
+.bsc-multiselect-container.checkbox-list > li > a {
+    display: block;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+}
+
+.bsc-multiselect-container.checkbox-list > li > a:hover {
+    color: #262626;
+    text-decoration: none;
+    background-color: #f5f5f5;
+}
+
+/*.multiselect-container.checkbox-list > li > a*/
