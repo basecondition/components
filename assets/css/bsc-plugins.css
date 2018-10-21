@@ -401,6 +401,15 @@ i.circular {
     color: #777;
 }
 
+.base_mblock .mblock_wrapper > div {
+    padding-top: 30px;
+
+}
+
+.base_mblock .mblock_wrapper span.removeadded {
+    top: 5px;
+}
+
 .base_mblock .dropdown .dropdown-toggle {
     font-size: 14px;
     height: 50px;
