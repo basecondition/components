@@ -66,6 +66,10 @@ class MBlockHelper
                 $definition = array('name' => $definition);
             }
 
+            if (!array_key_exists('name', $definition)) {
+                $definition['name'] = $key;
+            }
+
             if (!isset($definition['search_schema']) && !is_numeric($key)) {
                 $k = explode('/', $key);
                 $definition['search_schema'] = $key;
