@@ -362,7 +362,7 @@ class FormHelper
         $available = false;
 
         foreach (rex_view::getJsFiles() as $jsFile) {
-            if (strpos($jsFile, 'basecondition-multiselect') !== false) {
+            if (strpos($jsFile, 'bsc-toggle/js') !== false) {
                 $available = true;
                 break;
             }
@@ -382,7 +382,7 @@ class FormHelper
             $element->setAttribute('data-off', '<i class=\'rex-icon rex-icon-offline\'> ' . rex_i18n::msg('clang_offline'));
             $element->setAttribute('data-width', 160);
             $element->setAttribute('data-onstyle', 'info');
-            $element->setAttribute('class', 'bootstrap-toggle');
+            $element->setAttribute('class', 'basecondition-toggle');
         } else {
             // fallback
             $element = $form->addSelectField('status');
