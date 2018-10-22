@@ -198,6 +198,9 @@ class ViewHelper
         if (array_key_exists($type, $item)) {
             return rex_i18n::msg($item[$type]);
         }
+        if (array_key_exists('label_name', $item)) {
+            return rex_i18n::msg($table . $item['label_name']);
+        }
         if (array_key_exists('name', $item)) {
             return rex_i18n::msg($table . $item['name']);
         }

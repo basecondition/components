@@ -156,11 +156,9 @@ class FormHelper
             $element->setAttribute('style', $item['form_style']);
         }
         // add data
-        if (is_object($element) && array_key_exists('data', $item) && is_array($item['data']) && sizeof($item['data']) > 0) {
-            foreach ($item['data'] as $data) {
-                foreach ($data as $key => $val) {
-                    $element->setAttribute('data-' . $key, $val);
-                }
+        if (is_object($element) && array_key_exists('form_data', $item) && is_array($item['form_data']) && sizeof($item['form_data']) > 0) {
+            foreach ($item['form_data'] as $key => $data) {
+                $element->setAttribute('data-' . $key, $data);
             }
         }
 

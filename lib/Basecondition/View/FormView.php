@@ -234,6 +234,7 @@ class FormView
     /**
      * @param array $fieldset
      * @author Joachim Doerr
+     * @throws \rex_exception
      */
     public function addLangFieldset(array $fieldset)
     {
@@ -314,9 +315,15 @@ class FormView
             if (!is_array($item)) {
                 continue;
             }
+
+            if (!isset($item['label'])) {
+                $item['label_name'] = $item['name'];
+            }
+
             if ($this->namePrefix) {
                 $item['name'] = $this->namePrefix . $item['name'];
             }
+
             if (!isset($item['mblock_callable']) && isset($item['mblock_definition_table'])) {
                 $item['mblock_callable'] = '\Basecondition\Utils\MBlockHelper::getMBlockDefinitions';
             }
@@ -380,7 +387,7 @@ class FormView
     {
         $active = array();
         if ($this->id > 0) { // is edit?
-            $row = json_decode($this->form->getSql()->getRow()[$this->form->getTableName() .'.'. $item['name']], true);
+            $row = json_decode($this->form->getSql()->getRow()[$this->form->getTableName() . '.' . $item['name']], true);
             if (is_array($row) && sizeof($row) > 0) {
                 foreach ($row as $key => $value) {
                     $active[] = $key;
@@ -424,12 +431,12 @@ class FormView
             $type = '[' . $type . ']';
         }
 
-        $mblockView = new FormView($this->addonKey, $item['mblock_definition'], '', $this->id, $this->debug, $this->urlParameters, false, array('tableKey'=>$this->tableKey));
-        $mblockView->namePrefix = $item['name'] . ']' . $type . '[0][';
-        $mblockView->initForm();
-        $mblockView->addFieldElements(); // add field elements by defaults
+        $mblockFormView = new FormView($this->addonKey, $item['mblock_definition'], '', $this->id, $this->debug, $this->urlParameters, false, array('tableKey' => $this->tableKey));
+        $mblockFormView->namePrefix = $item['name'] . ']' . $type . '[0][';
+        $mblockFormView->initForm();
+        $mblockFormView->addFieldElements(); // add field elements by defaults
 
-        return MBlock::show($table, $mblockView->showElements(), array_merge(array('min'=>0), $settings));
+        return MBlock::show($table, $mblockFormView->showElements(), array_merge(array('min' => 0), $settings));
     }
 
     /**

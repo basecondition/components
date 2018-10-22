@@ -78,7 +78,9 @@ class MBlockHelper
 
             // add settings to url parameter
             $settings = self::getSettings($item, $key);
-            $settings = array_combine(array_map(function($k){ return 'mblock_settings_'.$k; }, array_keys($settings)), $settings);
+            $settings = array_combine(array_map(function ($k) {
+                return 'mblock_settings_' . $k;
+            }, array_keys($settings)), $settings);
             $urlParameters = array_merge($urlParameters, $settings);
 
             $link = (rex_url::backendController(array_merge($urlParameters,
@@ -100,7 +102,7 @@ class MBlockHelper
                 $ok = ' <span class="glyphicon glyphicon-ok">';
             }
 
-            $navigation[] = '<li' . $class . ' data-type_key="' . $definition['code'] . '"><a href="#" data-link="' . $link . '" data-rel="loadmblock">' . $definition['name'] . $ok . '</a></li>';
+            $navigation[] = '<li' . $class . ' data-type_key="' . $definition['code'] . '"><a href="#" data-link="' . $link . '" data-rel="loadmblock">' . rex_i18n::msg($definition['name']) . $ok . '</a></li>';
         }
 
         // add label for dropdown link
@@ -118,11 +120,11 @@ class MBlockHelper
 
         // print to form
         $form->addRawField('
-            <div class="'.$baseClass.'_mblock mblock_set_nav" data-unique_id="' . $uid . '">
+            <div class="' . $baseClass . '_mblock mblock_set_nav" data-unique_id="' . $uid . '">
                 <div class="dropdown btn-block">
                     <button class="btn btn-white btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        <i class="rex-icon '.$item['icon'].'"></i> ' . $item['mblock_label'] . ' <span class="caret"></span></button>
-                    <ul class="dropdown-menu clearfix" role="menu" style="">'.implode('', $navigation).'</ul>
+                        <i class="rex-icon ' . $item['icon'] . '"></i> ' . $item['mblock_label'] . ' <span class="caret"></span></button>
+                    <ul class="dropdown-menu clearfix" role="menu" style="">' . implode('', $navigation) . '</ul>
                 </div>
             </div>
         ');
@@ -150,7 +152,7 @@ class MBlockHelper
                     $cd = array_pop($d);
                     if ($cd == $type) {
                         $item['mblock_definition'] = $code;
-                        $headline = $name;
+                        $headline = $code;
                     }
                 }
             }
@@ -164,18 +166,15 @@ class MBlockHelper
             // TODO MBlock headline
             // TODO collapse by settings
             // TODO collapse open with name
-
             if (isset($item_clone['mblock_definition'][$type]['name'])) {
                 $content .= '<h6>' . $item_clone['mblock_definition'][$type]['name'] . '</h6>';
             } else {
-                $content .= '<h6>' . $headline . '</h6>';
+                $content .= '<h6>' . rex_i18n::msg($headline) . '</h6>';
             }
-
             $content .= $view->createMBlockFieldset($item, $type, $settings);
-
             // TODO collapse close
         }
-        $view->form->addRawField('<div class="'.$baseClass.'_mblock mblock_set_content" data-unique_id="' . $uid . '">' . $content . '</div>');
+        $view->form->addRawField('<div class="' . $baseClass . '_mblock mblock_set_content" data-unique_id="' . $uid . '">' . $content . '</div>');
 
     }
 
@@ -228,12 +227,10 @@ class MBlockHelper
             }
         }
 
-        $content = '';
-
         // TODO MBlock headline
         // TODO collapse by settings
         // TODO collapse open with name
-        $content = '<h6>'.rex_request::get('definition_name', 'string'). '</h6>';
+        $content = '<h6>' . rex_i18n::msg(rex_request::get('definition_name', 'string')) . '</h6>';
         // create block
         $content .= $form->createMBlockFieldset($item, rex_request::get('definition_code', 'string'), $settings);
         // TODO collapse close
@@ -247,6 +244,7 @@ class MBlockHelper
      * @param string $tempfile
      * @return array
      * @author Joachim Doerr
+     * @throws \rex_sql_exception
      */
     private static function loadDefinitions($table, $tempfile = 'data/definitions/default/temp/%s.yml')
     {
@@ -284,8 +282,6 @@ class MBlockHelper
             if ($create === true) {
                 rex_file::put($addon->getPath(sprintf($tempfile, $item['code'])), $item['definition']);
             }
-//            dump($item);
-//            die;
         }
         return $definitions;
     }
