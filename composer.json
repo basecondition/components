@@ -1,0 +1,17 @@
+{
+  "name": "basecondition/components",
+  "type": "library",
+  "description": "Useful redaxo resources.",
+  "keywords": [
+    "basecondition",
+    "components"
+  ],
+  "homepage": "http://basecondition.com",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Joachim Doerr",
+      "email": "hello@basecondition.com"
+    }
+  ]
+}
