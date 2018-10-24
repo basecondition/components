@@ -14,6 +14,7 @@ namespace Basecondition\Utils;
 use Basecondition\View\FormView;
 use DateTime;
 use mblock_rex_form;
+use rex;
 use rex_file;
 use rex_i18n;
 use rex_plugin;
@@ -82,18 +83,25 @@ class MBlockHelper
             $settings = array_combine(array_map(function ($k) {
                 return 'mblock_settings_' . $k;
             }, array_keys($settings)), $settings);
-            $urlParameters = array_merge($urlParameters, $settings);
 
-            $link = (rex_url::backendController(array_merge($urlParameters,
+            $urlParameters = array_merge($urlParameters, $settings,
                 array(
                     'id' => $id,
                     'add_mblock_block' => 1,
                     'definition_search_schema' => $definition['search_schema'],
                     'item' => $item['name'],
                     'definition_code' => $definition['code'],
-                    'definition_name' => $definition['name']
+                    'definition_name' => $definition['name'],
                 )
-            ), true));
+            );
+
+            foreach ($definition as $k => $v) {
+                if (strpos($k, 'label') !== false) {
+                    $urlParameters[$k] = $v;
+                }
+            }
+
+            $link = rex_url::backendController($urlParameters, true);
 
             $class = '';
             $ok = '';
@@ -202,6 +210,11 @@ class MBlockHelper
 
         // TODO if item_name empty == exception
         $item = ['name' => rex_request::get('item', 'string')];
+        $lang = substr(rex::getProperty('lang'), 0, 2);
+
+        if (!empty(rex_request::get('label_' . $lang))) {
+            $item['label_' . $lang] = rex_request::get('label_' . $lang);
+        }
 
         // load item
         foreach ($form->items as $set) {
@@ -235,7 +248,7 @@ class MBlockHelper
         // TODO MBlock headline
         // TODO collapse by settings
         // TODO collapse open with name
-        $content = '<h6>' . rex_i18n::msg(rex_request::get('definition_name', 'string')) . '</h6>';
+        $content = '<h6>' . (isset($item['label_' . $lang])) ? $item['label_' . $lang] : rex_i18n::msg(rex_request::get('definition_name', 'string')) . '</h6>';
         // create block
         $content .= $form->createMBlockFieldset($item, rex_request::get('definition_code', 'string'), $settings);
         // TODO collapse close
