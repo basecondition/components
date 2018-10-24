@@ -103,7 +103,8 @@ class MBlockHelper
                 $ok = ' <span class="glyphicon glyphicon-ok">';
             }
 
-            $navigation[] = '<li' . $class . ' data-type_key="' . $definition['code'] . '"><a href="#" data-link="' . $link . '" data-rel="loadmblock">' . rex_i18n::msg($definition['name']) . $ok . '</a></li>';
+            $linkName = ViewHelper::getLabel($definition, 'label', $tableBaseName);
+            $navigation[] = '<li' . $class . ' data-type_key="' . $definition['code'] . '"><a href="#" data-link="' . $link . '" data-rel="loadmblock">' . $linkName . $ok . '</a></li>';
         }
 
         // add label for dropdown link
@@ -145,6 +146,8 @@ class MBlockHelper
     {
         $content = '';
         $item_clone = $item;
+        $headlineLabel = '';
+        $headline = '';
 
         foreach ($active as $type) {
             if (is_array($item_clone['mblock_definition'])) {
@@ -152,6 +155,7 @@ class MBlockHelper
                     $d = explode('/', $code);
                     $cd = array_pop($d);
                     if ($cd == $type) {
+                        $headlineLabel = ViewHelper::getLabel($item_clone['mblock_definition'][$code], 'label');
                         $item['mblock_definition'] = $code;
                         $headline = $code;
                     }
@@ -170,7 +174,7 @@ class MBlockHelper
             if (isset($item_clone['mblock_definition'][$type]['name'])) {
                 $content .= '<h6>' . $item_clone['mblock_definition'][$type]['name'] . '</h6>';
             } else {
-                $content .= '<h6>' . rex_i18n::msg($headline) . '</h6>';
+                $content .= '<h6>' . (!empty($headlineLabel)) ? $headlineLabel : rex_i18n::msg($headline) . '</h6>';
             }
             $content .= $view->createMBlockFieldset($item, $type, $settings);
             // TODO collapse close
@@ -310,30 +314,33 @@ class MBlockHelper
             }
         }
 
-        // settings by type definition
-        if (!is_null($type) && is_array($item['mblock_definition']) && isset($item['mblock_definition'][$type])) {
-            $definition = $item['mblock_definition'][$type];
-            if (is_array($definition) && array_key_exists('mblock_settings', $definition)) {
-                if (is_string($definition['mblock_settings'])) {
-                    $yml = new \Symfony\Component\Yaml\Yaml();
-                    $definition['mblock_settings'] = $yml->parse($definition['mblock_settings']);
+        foreach (array($type, "sub/$type") as $typKey) {
+            // settings by type definition
+            if (!is_null($typKey) && is_array($item['mblock_definition']) && isset($item['mblock_definition'][$typKey])) {
+                $definition = $item['mblock_definition'][$typKey];
+                if (is_array($definition) && array_key_exists('mblock_settings', $definition)) {
+                    if (is_string($definition['mblock_settings'])) {
+                        $yml = new \Symfony\Component\Yaml\Yaml();
+                        $definition['mblock_settings'] = $yml->parse($definition['mblock_settings']);
+                    }
                 }
-                if (is_array($definition['mblock_settings'])) {
-                    foreach (array(
-                                 'min',
-                                 'max',
-                                 'delete_confirm',
-                                 'input_delete',
-                                 'smooth_scroll'
-                             ) as $key) {
-                        if (isset($definition['mblock_settings'][$key])) {
-                            $settings[$key] = $definition['mblock_settings'][$key];
-                        }
+            } else {
+                $definition = $item;
+            }
+            if (isset($definition['mblock_settings']) && is_array($definition['mblock_settings'])) {
+                foreach (array(
+                             'min',
+                             'max',
+                             'delete_confirm',
+                             'input_delete',
+                             'smooth_scroll'
+                         ) as $key) {
+                    if (isset($definition['mblock_settings'][$key])) {
+                        $settings[$key] = $definition['mblock_settings'][$key];
                     }
                 }
             }
         }
-
         return $settings;
     }
 
