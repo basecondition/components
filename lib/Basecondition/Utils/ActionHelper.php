@@ -11,6 +11,8 @@
 namespace Basecondition\Utils;
 
 
+use rex;
+use rex_extension;
 use rex_extension_point;
 use rex_request;
 use rex_sql;
@@ -18,12 +20,76 @@ use rex_sql;
 class ActionHelper
 {
     /**
+     * @author Joachim Doerr
+     * @param string $extensionPoint
+     */
+    public static function registerDefaultActions($extensionPoint = 'BSC_FUNC_ACTION')
+    {
+        rex_extension::register($extensionPoint, function (rex_extension_point $params) {
+            return self::executeDefaultActions($params);
+        });
+    }
+
+    /**
+     * @param rex_extension_point $params
+     * @return array|mixed
+     * @author Joachim Doerr
+     * @throws \rex_sql_exception
+     */
+    public static function executeDefaultActions(rex_extension_point $params)
+    {
+        $parameter = $params->getSubject();
+        $table = rex::getTablePrefix() . $parameter['addon']->getName() . '_' . $parameter['search_file'];
+
+        if (is_array($parameter)
+            && isset($parameter['func'])
+            && isset($parameter['base_path'])
+        ) {
+            $func = $parameter['func'];
+
+            switch ($func) {
+                case 'delete':
+                    $parameter['action_status'] = self::deleteData($table, $parameter['id']);
+                    $parameter['func'] = '';
+                    break;
+                case 'status':
+                    $parameter['action_status'] = self::statusData($table, $parameter['id']);
+                    $parameter['func'] = '';
+                    break;
+                case 'clone':
+                    $parameter['action_status'] = self::cloneData($table, $parameter['id']);
+                    $parameter['func'] = '';
+                    break;
+            }
+
+            if (isset($parameter['action_status']) && !$parameter['action_status']) {
+                $parameter[$parameter['search_file'] . '_msg'] = \rex_i18n::msg($parameter['addon']->getName() . '/' . $parameter['search_file'] . '/' . $func . '_fail');
+
+                if ($parameter['show_msg']) {
+                    echo \rex_view::warning($parameter[$parameter['search_file'] . '_msg']);
+                }
+            }
+            if (isset($parameter['action_status']) && $parameter['action_status']) {
+                $parameter[$parameter['search_file'] . '_msg'] = \rex_i18n::msg($parameter['addon']->getName() . '/' . $parameter['search_file'] . '/' . $func . '_success');
+
+                if ($parameter['show_msg']) {
+                    echo \rex_view::info($parameter[$parameter['search_file'] . '_msg']);
+                }
+            }
+
+        }
+
+        return $parameter;
+    }
+
+    /**
      * togglet bool data column
      * @param $table
      * @param $id
      * @param null $column
      * @return boolean
      * @author Joachim Doerr
+     * @throws \rex_sql_exception
      */
     public static function toggleBoolData($table, $id, $column = NULL)
     {
@@ -42,6 +108,7 @@ class ActionHelper
      * @param $id
      * @return boolean
      * @author Joachim Doerr
+     * @throws \rex_sql_exception
      */
     static public function cloneData($table, $id)
     {
@@ -64,6 +131,7 @@ class ActionHelper
      * @param $id
      * @return boolean
      * @author Joachim Doerr
+     * @throws \rex_sql_exception
      */
     static public function deleteData($table, $id)
     {
@@ -78,6 +146,7 @@ class ActionHelper
      * @param $id
      * @return boolean
      * @author Joachim Doerr
+     * @throws \rex_sql_exception
      */
     static public function statusData($table, $id)
     {
@@ -92,8 +161,9 @@ class ActionHelper
      * @return string
      *
      * rex_extension::register('REX_FORM_SAVED', function (rex_extension_point $params) {
-        ActionHelper::preSaveStatusChange($params);
-        });
+     * ActionHelper::preSaveStatusChange($params);
+     * });
+     * @throws \rex_sql_exception
      */
     public static function preSaveStatusChange(rex_extension_point $params)
     {
