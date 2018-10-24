@@ -28,6 +28,7 @@ class MBlockHelper
      * @param array $item
      * @author Joachim Doerr
      * @return array
+     * @throws \rex_sql_exception
      */
     public static function getMBlockDefinitions(FormView $formView, array $item)
     {
@@ -336,4 +337,14 @@ class MBlockHelper
         return $settings;
     }
 
+    /**
+     * @param string $prefix
+     * @param bool $more_entropy
+     * @return string
+     * @author Joachim Doerr
+     */
+    public function uniqId($prefix = "", $more_entropy = false)
+    {
+        return uniqid($prefix, $more_entropy);
+    }
 }

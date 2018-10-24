@@ -36,6 +36,23 @@ class ListHelper
     }
 
     /**
+     * @param $params
+     * @return string
+     * @author Joachim Doerr
+     */
+    public static function formatRexCategory($params)
+    {
+        /** @var rex_list $list */
+        $list = $params["list"];
+        if (\rex_article::get($params['value']) instanceof \rex_article) {
+            $str = $list->getColumnLink("category",  \rex_article::get($params['value'])->getValue('catname'));
+        } else {
+            $str = $list->getColumnLink("category",  $params['value']);
+        }
+        return $str;
+    }
+
+    /**
      * @param rex_list $list
      * @param array $item
      * @param array $parameter

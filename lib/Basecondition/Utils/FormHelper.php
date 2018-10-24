@@ -41,6 +41,11 @@ class FormHelper
             return null;
         }
 
+        // TODO STYLE FIELDSET LEGEND
+        if (array_key_exists('fields_legend', $item)) {
+            return $form->addRawField(rex_i18n::msg($item['fields_legend']));
+        }
+
         if (
             (array_key_exists('type', $item) or array_key_exists('form_type', $item))
             && (array_key_exists('name', $item) or array_key_exists('lang_name', $item))
@@ -51,49 +56,48 @@ class FormHelper
                 return call_user_func_array($item['form_callable'], array($form, $item, $id, $tableBaseName));
             }
 
-            $type = $item['type'];
+            $type = (array_key_exists('form_type', $item)) ? $item['form_type'] : $item['type'];
+            $defaultValue = (isset($item['form_default_value'])) ? $item['form_default_value'] : null;
 
-            if (array_key_exists('form_type', $item)) {
-                $type = $item['form_type'];
+            if (array_key_exists('form_default_value_callable', $item)) {
+                $defaultValue = call_user_func($item['form_default_value_callable']);
             }
 
             switch ($type) {
+                case 'hidden':
+                    $form->addRawField('<div class="hide">');
+                    $element = $form->addTextField($name, $defaultValue);
+                    $form->addRawField('</div>');
+                    return $element;
+                case 'link':
+                    return $form->addLinkmapField($name, $defaultValue);
+                case 'linklist':
+                    return $form->addLinklistField($name, $defaultValue);
                 case 'media':
-                    return $form->addMediaField($name);
-
+                    return $form->addMediaField($name, $defaultValue);
                 case 'medialist':
-                    return $form->addMedialistField($name);
-
+                    return $form->addMedialistField($name, $defaultValue);
                 case 'varchar':
                 case 'text':
-                    return $form->addTextField($name);
-
+                    return $form->addTextField($name, $defaultValue);
                 case 'textarea':
-                    return $form->addTextAreaField($name);
-
+                    return $form->addTextAreaField($name, $defaultValue);
                 case 'number':
                 case 'float':
                 case 'int':
-                    $element = $form->addTextField($name);
+                    $element = $form->addTextField($name, $defaultValue);
                     $element->setAttribute('type', 'number');
                     return $element;
-
                 case 'prio':
                     $element = $form->addPrioField($name);
                     $element->setLabelField($item['form_prio_label']);
                     $element->setAttribute('class', 'selectpicker form-control');
                     return $element;
-
-                case 'multipleselect':
-                case 'multiselect':
                 case 'multiple_select':
-                case 'multi_select':
-                case 'multipleSelect':
-                case 'multiSelect':
                     $item['multiple'] = true;
                 case 'select':
                     /** @var rex_form_select_element $element */
-                    $element = $form->addSelectField($name);
+                    $element = $form->addSelectField($name, $defaultValue);
                     $select = $element->getSelect();
                     if ($item['multiple']) {
                         $select->setMultiple($item['multiple']);
@@ -124,7 +128,6 @@ class FormHelper
                         $select->addSqlOptions($item['form_select_sql']);
                     }
                     return $element;
-
                 default:
                     // add exception
                     break;
@@ -145,7 +148,11 @@ class FormHelper
     {
         // add label
         if (is_object($element) && empty($element->getLabel())) {
-            $element->setLabel(ViewHelper::getLabel($item, 'label', $tableBaseName));
+            $label = ViewHelper::getLabel($item, 'label', $tableBaseName);
+            if (isset($item['lang_key_name'])) {
+                $label = $label . ' ' . $item['lang_key_name'];
+            }
+            $element->setLabel($label);
         }
         // add class
         if (is_object($element) && array_key_exists('form_class', $item)) {
@@ -317,20 +324,16 @@ class FormHelper
                 $keya = uniqid('a');
                 $form->addRawField("<div class=\"panel-group '.$baseClass.'-panel\" id=\"$keya\">");
                 break;
-
             case 'close_wrapper':
                 $form->addRawField('</div>');
                 break;
-
             case 'inner_wrapper_open':
                 $in = 'in';
-
             case 'inner_wrapper':
                 $keyp = uniqid('p');
                 $keyc = uniqid('c');
                 $form->addRawField("<div class=\"panel panel-default\" id=\"$keyp\"><div class=\"panel-heading\"><h4 class=\"panel-title\"><a data-toggle=\"collapse\" data-target=\"#$keyc\" href=\"#$keyc\" class=\"collapsed\">$name</a></h4></div> <div id=\"$keyc\" class=\"panel-collapse collapse$in\"><div class=\"panel-body\">");
                 break;
-
             case 'close_inner_wrapper':
                 $form->addRawField('</div></div></div>');
                 break;

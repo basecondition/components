@@ -209,7 +209,11 @@ class FormView
                         $tab = true; // set tab info tab is open
                         break;
                     case (strpos($key, 'lang') !== false):
-                        $this->addLangFieldset($item); // it is a langfieldset
+                        if (isset($item['lang_tabs']) && $item['lang_tabs'] === false) {
+                            $this->addSimpleLangFieldset($item); // it is a langfieldset
+                        } else {
+                            $this->addLangFieldset($item); // it is a langfieldset
+                        }
                         break;
                     case (strpos($key, 'fields') !== false):
                         $this->addDefaultFieldset($item); // it is a fieldset
@@ -228,6 +232,32 @@ class FormView
             if ($tabWrapper === true) {
                 FormHelper::closeTabs($this->form, 'close_wrapper'); // close tab wrapper
             }
+        }
+    }
+
+    /**
+     * @param array $fieldset
+     * @author Joachim Doerr
+     * @throws \rex_exception
+     */
+    public function addSimpleLangFieldset(array $fieldset)
+    {
+        // add inner wrapper -> tabs content
+        $count = 0;
+        foreach (rex_clang::getAll() as $key => $clang) {
+            // open inner wrapper
+            // add fieldsets to tab content field
+            foreach ($fieldset as $value) {
+                // is the value a array
+                if (is_array($value)) { // yes go on
+                    if (array_key_exists('panel_name', $value) && array_key_exists('fields', $value)) { // foreach the fieldsets form langfieldset
+                        $this->addPanelFieldset($value, $clang->getId()); // panel field
+                    } else {
+                        $this->addDefaultFieldset($value, $clang->getId(), $count); // default lang fields
+                    }
+                }
+            }
+            $count++;
         }
     }
 
@@ -289,10 +319,11 @@ class FormView
     /**
      * @param array $fieldset
      * @param null $clang
-     * @author Joachim Doerr
+     * @param int $count
      * @throws \rex_exception
+     * @author Joachim Doerr
      */
-    public function addDefaultFieldset(array $fieldset, $clang = null)
+    public function addDefaultFieldset(array $fieldset, $clang = null, $count = 0)
     {
         // field row
         $fieldRow = false;
@@ -311,23 +342,24 @@ class FormView
         }
 
         foreach ($fieldset as $item) {
+
+            if ($count > 0) {
+                unset($item['fields_legend']);
+            }
+
             // break is not a array
             if (!is_array($item)) {
                 continue;
             }
-
             if (!isset($item['label'])) {
                 $item['label_name'] = $item['name'];
             }
-
             if ($this->namePrefix) {
                 $item['name'] = $this->namePrefix . $item['name'];
             }
-
             if (!isset($item['mblock_callable']) && isset($item['mblock_definition_table'])) {
                 $item['mblock_callable'] = '\Basecondition\Utils\MBlockHelper::getMBlockDefinitions';
             }
-
             if (isset($item['mblock_callable'])) {
                 $result = call_user_func_array($item['mblock_callable'], array($this, $item));
 
@@ -355,6 +387,7 @@ class FormView
             // is field a lang field
             if (!is_null($clang) && is_array($item) && array_key_exists('name', $item)) {
                 $item['lang_name'] = $item['name'] . '_' . $clang; // add lang name
+                $item['lang_key_name'] = rex_clang::get($clang)->getCode(); // add lang name
             }
 
             // set element for add more...
