@@ -402,12 +402,16 @@ i.circular {
 }
 
 .base_mblock .mblock_wrapper > div {
-    padding-top: 30px;
-
+    padding-top: 32px;
 }
 
 .base_mblock .mblock_wrapper span.removeadded {
-    top: 5px;
+    /*top: 6px;*/
+    top: 1px;
+    background-color: #fff;
+    right: 1px;
+    z-index: 1;
+    padding: 1px;
 }
 
 .base_mblock .dropdown .dropdown-toggle {
