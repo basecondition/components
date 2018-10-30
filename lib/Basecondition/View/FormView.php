@@ -386,8 +386,10 @@ class FormView
 
             // is field a lang field
             if (!is_null($clang) && is_array($item) && array_key_exists('name', $item)) {
-                $item['lang_name'] = $item['name'] . '_' . $clang; // add lang name
-                $item['lang_key_name'] = rex_clang::get($clang)->getCode(); // add lang name
+                $item['lang_name'] = $item['name'] . '_' . $clang; // add lang key
+                if (rex_clang::count() > 1) {
+                    $item['lang_key_name'] = '(' . rex_clang::get($clang)->getCode() . ')'; // add lang name
+                }
             }
 
             // set element for add more...

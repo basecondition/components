@@ -15,6 +15,7 @@ use Basecondition\Definition\DefinitionHelper;
 use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
 use rex_addon;
+use rex_clang;
 use rex_i18n;
 use rex_list;
 use rex_plugin;
@@ -202,7 +203,13 @@ class ViewHelper
             return rex_i18n::msg($table . $item['label_name']);
         }
         if (array_key_exists('name', $item)) {
-            return rex_i18n::msg($table . $item['name']);
+            $name = $item['name'];
+            foreach (rex_clang::getAll() as $lang) {
+                if (strpos($item['name'], '_' . $lang->getId()) !== false) {
+                    $name = str_replace('_' . $lang->getId(), '', $item['name']);
+                }
+            }
+            return rex_i18n::msg($table . $name);
         }
         return '';
     }
