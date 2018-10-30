@@ -136,22 +136,9 @@ class ListHelper
      */
     public static function setLabel(rex_list $list, array $item, $name, $prefix = '')
     {
-        $prefix = (!empty($prefix)) ? $prefix . '_' : '';
-        // set by all
-        if (array_key_exists('label', $item)) {
-            $list->setColumnLabel($name, rex_i18n::msg($item['label']));
-            return $list;
-        }
-        $lang = explode('_', rex_i18n::getLocale());
-        // set lang by clang
-        foreach ($lang as $value) {
-            $property = 'label_' . $value;
-            if (array_key_exists($property, $item)) {
-                $list->setColumnLabel($name, $item[$property]);
-                return $list;
-            }
-        }
-        $list->setColumnLabel($name, rex_i18n::msg($prefix . $item['name']));
+        $labelPrefix = (!empty($prefix)) ? $prefix . '_' : '' ;
+        $label = (isset($item['list_label'])) ? rex_i18n::msg($labelPrefix . $item['list_label']) : ViewHelper::getLabel($item, 'label', $prefix);
+        $list->setColumnLabel($name, $label);
         return $list;
     }
 
