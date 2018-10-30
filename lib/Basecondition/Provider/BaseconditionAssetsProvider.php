@@ -32,18 +32,22 @@ class BaseconditionAssetsProvider
 
         // add js vendors
         self::addJS([
-            'basecondition-select' => '/bsc-multiselect/js/multiselect.js',
-            'basecondition-toggle' => '/bsc-toggle/js/toggle.js',
-            'basecondition-tools'  => '/js/bsc-plugins.js'
+            'basecondition-numeric'     => '/bsc-autonumeric/bsc-autonumeric.js',
+            'basecondition-datepicker'  => '/bsc-daterangepicker/bsc-daterangepicker.js',
+            'basecondition-select'      => '/bsc-multiselect/bsc-multiselect.js',
+            'basecondition-toggle'      => '/bsc-toggle/bsc-toggle.js',
+            'baseconsition-tagsinput'   => '/bsc-tagsinput/bsc-tagsinput.js',
+            'basecondition-tools'       => '/bsc-plugins/bsc-plugins.js'
         ]);
         // add css vendors
         self::addCss([
-            'basecondition-select' => '/bsc-multiselect/css/multiselect.css',
-            'basecondition-toggle' => '/bsc-toggle/css/toggle.css',
-            'basecondition-tools'  => '/css/bsc-plugins.css'
+            'basecondition-datepicker'  => '/bsc-daterangepicker/bsc-daterangepicker.css',
+            'basecondition-select'      => '/bsc-multiselect/bsc-multiselect.css',
+            'basecondition-toggle'      => '/bsc-toggle/bsc-toggle.css',
+            'baseconsition-tagsinput'   => '/bsc-tagsinput/bsc-tagsinput.css',
+            'basecondition-tools'       => '/bsc-plugins/bsc-plugins.css'
         ]);
     }
-
 
     /**
      * @param array $js

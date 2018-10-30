@@ -10,6 +10,10 @@
 let bsc_checkbox = '.basecondition-toggle',
     bsc_multi_select = '.basecondition-multi-select',
     bsc_multi_open_select = '.basecondition-multi-select-open',
+    bsc_currency_input = '.basecondition-currency',
+    bsc_tags_input = '.basecondition-tags-input',
+    bsc_date_picker = '.basecondition-date-picker',
+    bsc_daterange_picker = '.basecondition-date-range-picker',
     bsc_dropdown = '.base_mblock .dropdown',
     form_element = '.base-form';
 
@@ -32,11 +36,99 @@ function tools_init($element) {
     mblock_dropdown_init($element);
     checkboxpicker_init($element);
     multiselects_init($element);
+    currency_input_init($element);
+    tags_input_init($element);
+    date_range_picker_init($element);
 }
 
 function tools_destroy($element) {
     checkboxpicker_destroy($element);
     multiselects_destroy($element);
+    currency_input_destroy($element);
+    tags_input_destroy($element);
+    date_range_picker_destroy($element);
+}
+
+function date_range_picker_init($element) {
+    if ($element.find(bsc_date_picker).length) {
+        $element.find(bsc_date_picker).each(function () {
+            $(this).bscdaterangepicker({
+                singleDatePicker: true,
+                locale: {
+                    format: 'DD.MM.YYYY'
+                }
+            });
+        });
+    }
+}
+
+function date_range_picker_destroy($element) {
+    if ($element.find(bsc_date_picker).length) {
+        $element.find(bsc_date_picker).each(function () {
+            // TODO!!!
+        });
+    }
+}
+
+function tags_input_init($element) {
+    if ($element.find(bsc_tags_input).length) {
+        $element.find(bsc_tags_input).each(function () {
+            $(this).bsctagify();
+        });
+    }
+}
+
+function tags_input_destroy($element) {
+    if ($element.find(bsc_tags_input).length) {
+        $element.find(bsc_tags_input).each(function () {
+            // TODO!!!
+        });
+    }
+}
+
+function currency_input_init($element) {
+    if ($element.find(bsc_currency_input).length) {
+        $element.find(bsc_currency_input).each(function (index) {
+            let $currencySymbol = '€';
+            if ($(this).attr('data-currency-symbol')) {
+            }
+            $(this).parent().prepend('<div class="input-group"><span class="input-group-addon">' + $currencySymbol + '</span></div>');
+            let $group = $(this).parent().find('.input-group'),
+                $uid = Math.random().toString(16).slice(2) + '_' + index;
+            $group.append($(this));
+            $group.find('input').addClass('bscautonumeric_' + $uid);
+            new BscAutoNumeric('.bscautonumeric_' + $uid, {
+                digitGroupSeparator        : BscAutoNumeric.options.digitGroupSeparator.noSeparator,
+                decimalCharacter           : ',',
+                decimalCharacterAlternative: '.',
+            });
+        });
+    }
+}
+
+function currency_input_destroy($element) {
+    if ($element.find(bsc_currency_input).length) {
+        $element.find(bsc_currency_input).each(function () {
+            let parent_element = $(this).parent(),
+                $dd = $(this).parents('dd'),
+                $classes = $(this).attr("class").split(" "),
+                $myclass;
+
+            $(this).appendTo($dd);
+            parent_element.remove();
+
+            for (var i = 0, max = $classes.length; i < max; i++) {
+                let $class = $classes[i].split("_");
+                if ($class[0] === "bscautonumeric") {
+                    $myclass = $classes[i];
+                    let $val = $(this).val().replace(',', '.');
+                    $(this).off().removeClass($myclass);
+                    $(this).replaceWith($(this).clone().val($val));
+                    break;
+                }
+            }
+        });
+    }
 }
 
 function multiselects_init($element) {
