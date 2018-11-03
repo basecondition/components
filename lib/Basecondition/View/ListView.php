@@ -417,7 +417,8 @@ class ListView
                     $this->list->setColumnParams($item['name'], $param);
                 }
                 // sortable
-                if (array_key_exists('list_sort', $item) && $item['list_sort'] == true) {
+                if ((array_key_exists('list_sort', $item) && $item['list_sort'] == true) or
+                    (array_key_exists('list_sortable', $item) && $item['list_sortable'] == true)) {
                     $this->list->setColumnSortable($item['name']);
                 }
 
