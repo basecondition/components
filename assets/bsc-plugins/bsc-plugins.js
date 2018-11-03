@@ -276,21 +276,45 @@ function mblock_dropdown_init($element) {
 }
 
 function mblock_dropdown_callback_run($element) {
-    mblock_module.registerCallback('reindex_end', function (item) {
-        $element.each(function () {
-            var _drop = $(this),
-                target = $(this).parent().next();
-            target.find('.mblock_wrapper').each(function () {
-                if ($(this).find('> div').length == 0) {
-                    var type_key = $(this).data('type_key');
-                    _drop.find('li').each(function () {
-                        if ($(this).data('type_key') == type_key) {
-                            $(this).removeClass('disabled');
-                            $(this).find('a span').remove();
-                        }
-                    });
-                }
+    if (typeof mblock_module === 'object') {
+        mblock_module.registerCallback('reindex_end', function () {
+            $element.each(function () {
+                var _drop = $(this),
+                    target = $(this).parent().next();
+                target.find('.mblock_wrapper').each(function () {
+                    if ($(this).find('> div').length == 0) {
+                        var type_key = $(this).data('type_key');
+                        _drop.find('li').each(function () {
+                            if ($(this).data('type_key') == type_key) {
+                                $(this).removeClass('disabled');
+                                $(this).find('a span').remove();
+                            }
+                        });
+                    }
+                });
             });
+
+            if (mblock_module.lastAction === 'remove_item') {
+                $('.mblock_set_content .mblock_headline').each(function () {
+                    if ($(this).next().hasClass('mblock_wrapper') && !$(this).next().find('.sortitem').length) {
+                        let type = $(this).attr('data-type_key');
+
+                        if ($(this).parent().parent().find('.mblock_set_nav')) {
+                            $(this).parent().parent().find('.mblock_set_nav ul.dropdown-menu li').each(function () {
+                                if ($(this).attr('data-type_key') === type) {
+                                    $(this).removeClass('disabled');
+                                    $(this).find('span').remove();
+                                }
+                            });
+                        }
+
+                        $(this).next().remove();
+                        $(this).remove();
+                    }
+
+                });
+            }
+
         });
-    });
+    }
 }
