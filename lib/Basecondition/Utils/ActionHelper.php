@@ -14,6 +14,7 @@ namespace Basecondition\Utils;
 use rex;
 use rex_extension;
 use rex_extension_point;
+use rex_form;
 use rex_request;
 use rex_sql;
 
@@ -154,18 +155,17 @@ class ActionHelper
         return true;
     }
 
-
     /**
      * @param rex_extension_point $params
      * @author Joachim Doerr
      * @return string
      *
      * rex_extension::register('REX_FORM_SAVED', function (rex_extension_point $params) {
-     * ActionHelper::preSaveStatusChange($params);
+     *      ActionHelper::postSaveStatusChange($params);
      * });
      * @throws \rex_sql_exception
      */
-    public static function preSaveStatusChange(rex_extension_point $params)
+    public static function postSaveStatusChange(rex_extension_point $params)
     {
         $param = $params->getParams();
         /** @var rex_form $form */
