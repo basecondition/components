@@ -154,10 +154,12 @@ class MBlockHelper
     {
         $content = '';
         $item_clone = $item;
-        $headlineLabel = '';
-        $headline = '';
 
         foreach ($active as $type) {
+
+            $headlineLabel = '';
+            $headline = '';
+
             if (is_array($item_clone['mblock_definition'])) {
                 foreach ($item_clone['mblock_definition'] as $code => $name) {
                     $d = explode('/', $code);
@@ -174,17 +176,21 @@ class MBlockHelper
             if (isset($item_clone['mblock_definition'][$type]['search_schema'])) {
                 $item['mblock_definition'] = $item_clone['mblock_definition'][$type]['search_schema'];
             }
+
             $settings = self::getSettings($item_clone, $type);
 
             // TODO MBlock headline
             // TODO collapse by settings
             // TODO collapse open with name
             if (isset($item_clone['mblock_definition'][$type]['name'])) {
-                $content .= '<h6>' . $item_clone['mblock_definition'][$type]['name'] . '</h6>';
+                $headline = $item_clone['mblock_definition'][$type]['name'];
             } else {
-                $content .= '<h6>' . (!empty($headlineLabel)) ? $headlineLabel : rex_i18n::msg($headline) . '</h6>';
+                $headline = (!empty($headlineLabel)) ? $headlineLabel : rex_i18n::msg($headline);
             }
-            $content .= $view->createMBlockFieldset($item, $type, $settings);
+            if (!empty($headline)) {
+                $headline = "<div class=\"mblock_headline\" data-type_key=\"{$type}\"><h6>{$headline}</h6></div>";
+            }
+            $content .=  $headline . $view->createMBlockFieldset($item, $type, $settings);
             // TODO collapse close
         }
         $view->form->addRawField('<div class="' . $baseClass . '_mblock mblock_set_content" data-unique_id="' . $uid . '">' . $content . '</div>');
