@@ -14,6 +14,7 @@ let bsc_checkbox = '.basecondition-toggle',
     bsc_currency_input = 'input[data-bsc-currency="1"]',
     form_element = '.base-form';
 
+// for older mblock versions
 $(document).on('ready', function () {
     if (typeof mblock_module === 'object') {
         mblock_module.registerCallback('reindex_end', function () {
@@ -25,7 +26,7 @@ $(document).on('ready', function () {
     }
 });
 
-$(document).on('ready pjax:success', function () {
+$(document).on('rex:ready', function () {
     tools_init($(form_element));
 });
 
