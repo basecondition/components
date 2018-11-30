@@ -13,6 +13,7 @@ namespace Basecondition\Utils;
 
 use rex;
 use rex_clang;
+use rex_extension_point;
 use rex_form_element;
 use rex_form_prio_element;
 use rex_form_select_element;
@@ -445,5 +446,17 @@ class FormHelper
     public static function wrapForm($message, $form, $class = 'base-form', $data = '')
     {
         return '<div class="'.$class.'" '.$data.'>' . $message . $form->show() . '</div>';
+    }
+
+    /**
+     * @param rex_extension_point $params
+     * @return mixed
+     * @author Joachim Doerr
+     */
+    public static function removeDeleteButton(rex_extension_point $params)
+    {
+        $subject = $params->getSubject();
+        $subject['delete'] = '';
+        return $subject;
     }
 }
