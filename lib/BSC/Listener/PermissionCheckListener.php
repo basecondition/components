@@ -8,20 +8,14 @@
 namespace BSC\Listener;
 
 
-use BSC\Api\Middleware;
 use BSC\config;
+use BSC\Repository\YComGroupRepository;
 use OAuth2\Response;
 use OAuth2\ResponseInterface;
-use rex_ycom_group;
+use rex_yform_manager_dataset;
 
 class PermissionCheckListener
 {
-    public static function executeGroupListManipulationAction(\rex_extension_point $ep): array
-    {
-        $group = $ep->getSubject();
-        return $group;
-    }
-
     public static function executeMandantPermissionCheckAction(\rex_extension_point $ep): ResponseInterface|array
     {
         $subject = $ep->getSubject();
@@ -34,48 +28,52 @@ class PermissionCheckListener
     public static function executeScopePermissionCheckAction(\rex_extension_point $ep): ResponseInterface|array
     {
         $subject = $ep->getSubject();
-        dump($subject);
-        dump(rex_ycom_group::getGroups());
-        if(isset($subject['requestConfig']['tags']) && is_array($subject['requestConfig']['tags'])) {
+
+        if (count($subject['groups']) <= 0 || !isset($subject['requestConfig']['tags'])) return new Response(array('error' => 'account_permission_unknown', 'error_description' => 'Account permission unknown'), 403);
+
+        $permissions = YComGroupRepository::findPermissionsByGroupId(array_keys($subject['groups']));
+//        dump($permissions); die;
+
+        if(is_array($subject['requestConfig']['tags'])) {
             foreach ($subject['requestConfig']['tags'] as $tag) {
-                dump($tag);
-            }
-        }
 
+                $permissionId = [];
 
-//        foreach ($subject['security'] as $value) {
-//            if (isset($value[Middleware::oAuthSecurityDefinitionKey])) {
-//                $scope = $value[Middleware::oAuthSecurityDefinitionKey];
-//            }
-//            dump($value[Middleware::oAuthSecurityDefinitionKey]);
-////            if (is_array($value)) {
-////                if ($key === "oAuth2") {
-////                    dump($key);
-////                }
-////            }
-//        }
+                /** @var rex_yform_manager_dataset $permission */
+                foreach ($permissions as $permission) {
+                    if($permission->getValue('name') == $tag) {
+                        $permissionId[] = $permission->getId();
+                    }
+                }
 
+                // gibt es überhaupt permissions?
+                if (count($permissionId) <= 0) {
+                    return new Response(array('error' => 'account_permission_denied', 'error_description' => 'Account permission denied'), 401);
+                }
 
+                // jetzt können wir die permission groups auslesen, da gibts dann den permission scope zur rolle
+                $permissionGroups = YComGroupRepository::findPermissionGroupByPermissionId($permissionId);
 
-        $path = str_replace('/', '_', $subject['path']);
-        if (str_starts_with($path, "_")) $path = substr($path, 1);
+                // nur wenn der scope vorhanden ist prüfen wir auf den scope
+                if (count($subject['scope']) > 0) {
+                    // geh durch die groups und prüfe ob sie ein passenden scope haben wenn nein response 401
+                    /** @var rex_yform_manager_dataset $permissionGroup */
+                    foreach ($permissionGroups as $permissionGroup) {
+                        $data = $permissionGroup->getData();
+                        $permissionScope = json_decode($data['scope']);
+                        if (!is_array($permissionScope)) $permissionScope = [$permissionScope]; // continue; -> wenn kein scope vollzugriff bedeuten sollte dann continue!
+                        $matchingValues = array_intersect($permissionScope, $subject['scope']);
 
-//        dump($path);
-//        dump('T');
-        die;
-
-        if (isset($subject['scope']) && is_array($subject['scope'])) {
-            foreach ($subject['scope'] as $item) {
-                if (isset($subject['group']['key']) && $subject['group']['key'] !== $path . '_' . $item) {
-                    return new Response(array('error' => 'account_mandant_permission_denied', 'error_description' => 'Account mandant permission denied'), 401);
+                        if (in_array('admin', $permissionScope)) {
+                            $matchingValues[] = 'admin';
+                        }
+                        if (count($matchingValues) <= 0) {
+                            return new Response(array('error' => 'account_permission_denied', 'error_description' => 'Account permission denied'), 401);
+                        }
+                    }
                 }
             }
         }
-
-        dump($subject);die;
-//        if (isset($subject['group']['key']) && !$subject['group']['key'] == config::get('mandant.key')) {
-//            new Response(array('error' => 'account_mandant_permission_denied', 'error_description' => 'Account mandant permission denied'), 401);
-//        }
         return $subject;
     }
 }

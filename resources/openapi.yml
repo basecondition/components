@@ -1186,9 +1186,12 @@ securityDefinitions:
     authorizationUrl: https://chekov.basecondition.bsc/api/v1/token
     tokenUrl: https://chekov.basecondition.bsc/api/v1/token
     scopes:
-      read: Grants read access
-      write: Grants write access
-      admin: Grants read and write access to administrative information
+      read: Erlaubt das Lesen von Daten oder Ressourcen.
+      write: Ermöglicht das Schreiben, Aktualisieren oder Löschen von Daten oder Ressourcen.
+      delete: Erlaubt das Löschen von Daten oder Ressourcen.
+      update: Ermöglicht das Aktualisieren von Daten oder Ressourcen.
+      create: Erlaubt das Erstellen neuer Daten oder Ressourcen.
+      admin: Full grants access to administrative data or ressources
 
 responses:
   500:

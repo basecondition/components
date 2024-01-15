@@ -33,5 +33,5 @@ listener:
   permission_check:
     class: \BSC\Listener\PermissionCheckListener
     tags:
-      - { name: BSC_API_PERMISSION_CHECK_YCOM_GROUP_LIST, method: executeGroupListManipulationAction, priority: -1 }
-      - { name: BSC_API_PERMISSION_CHECK, method: executeScopePermissionCheckAction, priority: -1 }
+      - { name: BSC_API_PERMISSION_CHECK, method: executeMandantPermissionCheckAction, priority: 1 }
+      - { name: BSC_API_PERMISSION_CHECK, method: executeScopePermissionCheckAction, priority: 1 }

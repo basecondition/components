@@ -35,7 +35,7 @@ class YComGroupRepository extends AbstractRepository
         return parent::insert($fields, self::GROUP_TABLE);
     }
 
-    public static function findPermissionsByGroupId(int $id): ?rex_yform_manager_collection
+    public static function findPermissionsByGroupId(array|int $ids): ?rex_yform_manager_collection
     {
         // select p.*, gp.* from rex_bsc_permission p inner join rex_bsc_group_permission gp on p.id = gp.permission
         // oder für suche nach schlüsse
@@ -46,7 +46,15 @@ class YComGroupRepository extends AbstractRepository
         return rex_yform_manager_table::get(self::PERMISSION_TABLE)
             ->query()
             ->join(self::GROUP_PERMISSION_TABLE, null, self::PERMISSION_TABLE . '.id', self::GROUP_PERMISSION_TABLE.'.permission')
-            ->where(self::GROUP_PERMISSION_TABLE.'.group', $id)
+            ->where(self::GROUP_PERMISSION_TABLE.'.group', $ids)
+            ->find();
+    }
+
+    public static function findPermissionGroupByPermissionId(array|int $permissionId): ?rex_yform_manager_collection
+    {
+        return rex_yform_manager_table::get(self::GROUP_PERMISSION_TABLE)
+            ->query()
+            ->where('permission', $permissionId)
             ->find();
     }
 
