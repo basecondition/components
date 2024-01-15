@@ -1,0 +1,14 @@
+package: base
+version: dev
+author: Joachim Doerr
+supportpage: https://github.com/redaxo/redaxo
+load: late
+requires:
+  redaxo: "^5.15"
+  packages:
+    definitions: "^1.0.0"
+    yform: "^4.1.0"
+    ycom: "^4.2.0"
+    yrewrite: "^2.10.0"
+  php:
+    version: "^8.1"

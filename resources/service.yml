@@ -1,0 +1,37 @@
+listener:
+  boot:
+    class: \BSC\Listener\BscBootListener
+    tags:
+      - { name: PACKAGES_INCLUDED, method: executeBscInitBoot, priority: -1 }
+      - { name: BSC_CONFIG_LOAD, method: executeConfigOverwrite }
+      - { name: URL_REWRITE, method: executeUrlRewriteDomainReplace }
+      - { name: BSC_INIT_DONE, method: executeBscAfterInitBootAction, priority: 1 }
+      - { name: REX_YFORM_SAVED, method: executeYComGroupPermissionSync, priority: -1 }
+#  member:
+#    class: \BSC\Listener\MemberActionListener
+#    tags:
+#      - { name: REX_YFORM_SAVED, method: executeMemberYFormSaveAction }
+#      - { name: REX_YCOM_YFORM_USER_UPDATE, method: executeMemberPWResetAction }
+#      - { name: REX_YCOM_YFORM_USER_UPDATE, method: executeMemberActivateAction }
+#      - { name: BSC_API_DELETE_MEMBER, method: executeMemberDeleteAction }
+#      - { name: BSC_API_POST_UPDATE_MEMBER, method: executeApiPostMemberUpdateAction }
+#  mail_send:
+#    class: \BSC\Listener\MailSendActionListener
+#    tags:
+#      - { name: BSC_EMAIL_MEMBER_REGISTER, method: executeSendRegistrationEmailAction }
+#      - { name: BSC_EMAIL_MEMBER_REGISTER_DONE, method: executeSendRegistrationDoneEmailAction }
+#  registration:
+#    class: \BSC\Listener\RegistrationActionListener
+#    tags:
+#      - { name: BSC_API_POST_CREATE_MEMBER, method: executeMemberRegistrationAction }
+#      - { name: BSC_API_MEMBER_REGISTRATION_RESEND_MAIL, method: executeMemberRegistrationEmailResendAction }
+#      - { name: BSC_API_POST_VALID_VERIFY_MEMBER, method: executeMemberSuccessVerifyAction }
+#  media_permission_check:
+#    class: \BSC\Listener\MediaPermissionCheckListener
+#    tags:
+#      - { name: MEDIA_MANAGER_BEFORE_SEND, method: executeMediaPermissionCheckAction, priority: -1 }
+  permission_check:
+    class: \BSC\Listener\PermissionCheckListener
+    tags:
+      - { name: BSC_API_PERMISSION_CHECK_YCOM_GROUP_LIST, method: executeGroupListManipulationAction, priority: -1 }
+      - { name: BSC_API_PERMISSION_CHECK, method: executeScopePermissionCheckAction, priority: -1 }

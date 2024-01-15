@@ -1,0 +1,30 @@
+{
+  "name": "basecondition/base",
+  "type": "library",
+  "description": "Useful redaxo resources.",
+  "keywords": [
+    "basecondition",
+    "base"
+  ],
+  "homepage": "http://basecondition.com",
+  "authors": [
+    {
+      "name": "Joachim Doerr",
+      "email": "hello@basecondition.com"
+    }
+  ],
+  "require": {
+    "multiavatar/multiavatar-php": "^1.0",
+    "nikic/fast-route": "^v1.3.0",
+    "bshaffer/oauth2-server-php": "^v1.14.1",
+    "symfony/serializer": "^v6.4.2",
+    "symfony/property-access": "^v6.4.0",
+    "league/csv": "^9.4",
+    "tecnickcom/tcpdf": "^6.3",
+    "endroid/qr-code": "^5.0.4",
+    "jms/serializer": "^3.29.1",
+    "symfony/validator": "^v6.3.5",
+    "laminas/laminas-diactoros": "^3.3.0",
+    "doctrine/annotations": "^1.14.0"
+  }
+}
