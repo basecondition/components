@@ -3,7 +3,7 @@
  * ┓            ┓• •
  * ┣┓┏┓┏┏┓┏┏┓┏┓┏┫┓╋┓┏┓┏┓
  * ┗┛┗┻┛┗ ┗┗┛┛┗┗┻┗┗┗┗┛┛┗━━
- * @package base
+ * @package basecondition components
  * @author Joachim Doerr
  * @copyright (C) hello@basecondition.com
  *
@@ -11,9 +11,13 @@
  * file that was distributed with this source code.
  */
 
+/** @var rex_addon $this */
+
 use BSC\base;
 use BSC\config;
 use BSC\listener;
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
 
 $uri = $_SERVER['REQUEST_URI'];
 // Strip query string (?foo=bar) and decode URI
@@ -21,12 +25,35 @@ if (false !== $pos = strpos($uri, '?')) $uri = substr($uri, 0, $pos);
 
 // TODO docs
 // set first basic api config parameters
-// wenn ein codegen neu gelaufen ist, oder resourcen upgedated wurden z.b. composer etc.
-// dann am besten kurzzeitig auf true sofern es probleme gibt
-config::set('bsc.api', [
-    'developmentMode' => false,
-    'uri' => rawurldecode($uri)
+$db = rex::getDbConfig(1);
+config::set('bsc', [
+    'api' => [
+        // wenn ein codegen neu gelaufen ist, oder resourcen upgedated wurden z.b. composer etc.
+        // dann am besten kurzzeitig auf true sofern es probleme gibt
+        'developmentMode' => false,
+        'uri' => rawurldecode($uri),
+        'doctrine' => [
+            'isDevMode' => true,
+            'entitiesPath' => $this->getPath('lib/BSC/Entity/'),
+            'repositoriesNamespace' => 'BSC\Repository',
+            'db' => [
+                'driver'   => 'pdo_mysql',
+                'host'     => $db->host,
+                'user'     => $db->login,
+                'password' => $db->password,
+                'dbname'   => $db->name,
+            ]
+        ],
+    ],
 ]);
+
+$doctrineConfig = Setup::createYAMLMetadataConfiguration(
+    [config::get('bsc.api.doctrine.entitiesPath')],
+    config::get('bsc.api.doctrine.isDevMode')
+);
+
+$entityManager = EntityManager::create(config::get('bsc.api.doctrine.db'), $doctrineConfig);
+
 
 // set mandant key to config
 if (is_null(config::get('mandant.key'))) {
@@ -85,7 +112,7 @@ base::set('table', [
 ]);
 
 // first load listener definitions
-config::loadConfig(['../../src/addons/base/resources/*.yml']);
+config::loadConfig(['../../src/addons/components/resources/*.yml']);
 
 // register event listener
 listener::registerListener(config::get('resources.service.listener'));

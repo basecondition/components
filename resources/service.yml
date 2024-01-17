@@ -2,11 +2,11 @@ listener:
   boot:
     class: \BSC\Listener\BscBootListener
     tags:
-      - { name: PACKAGES_INCLUDED, method: executeBscInitBoot, priority: -1 }
+      - { name: PACKAGES_INCLUDED, method: executeBscInitBoot, priority: 1 } # late
       - { name: BSC_CONFIG_LOAD, method: executeConfigOverwrite }
-      - { name: URL_REWRITE, method: executeUrlRewriteDomainReplace }
-      - { name: BSC_INIT_DONE, method: executeBscAfterInitBootAction, priority: 1 }
-      - { name: REX_YFORM_SAVED, method: executeYComGroupPermissionSync, priority: -1 }
+      - { name: URL_REWRITE, method: executeUrlRewriteDomainReplace, priority: 1} # late
+      - { name: BSC_INIT_DONE, method: executeBscAfterInitBootAction }
+#      - { name: REX_YFORM_SAVED, method: executeYComGroupPermissionSync, priority: 1 } # late
 #  member:
 #    class: \BSC\Listener\MemberActionListener
 #    tags:
@@ -33,5 +33,5 @@ listener:
   permission_check:
     class: \BSC\Listener\PermissionCheckListener
     tags:
-      - { name: BSC_API_PERMISSION_CHECK, method: executeMandantPermissionCheckAction, priority: 1 }
-      - { name: BSC_API_PERMISSION_CHECK, method: executeScopePermissionCheckAction, priority: 1 }
+      - { name: BSC_API_PERMISSION_CHECK, method: executeMandantPermissionCheckAction, priority: -1 } # early
+      - { name: BSC_API_PERMISSION_CHECK, method: executeScopePermissionCheckAction }

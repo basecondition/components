@@ -26,7 +26,7 @@ class listener
         }, $priority, $params);
     }
 
-    public static function registerListener(array $listener): void
+    public static function registerListener(?array $listener = []): void
     {
         if (sizeof($listener) > 0) {
             foreach ($listener as $item) {

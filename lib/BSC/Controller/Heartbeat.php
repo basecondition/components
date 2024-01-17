@@ -20,6 +20,6 @@ class Heartbeat extends AbstractController
      * @author Joachim Doerr
      */
     public static function getHeartbeatAction(ServerRequestInterface $request, array $args = []) {
-        return new Response([], 204);
+        return self::response(['ok' => true], 200);
     }
 }

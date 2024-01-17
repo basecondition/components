@@ -1,4 +1,4 @@
-package: base
+package: components
 version: dev
 author: Joachim Doerr
 supportpage: https://github.com/redaxo/redaxo

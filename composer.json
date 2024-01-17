@@ -1,10 +1,10 @@
 {
-  "name": "basecondition/base",
+  "name": "basecondition/components",
   "type": "library",
   "description": "Useful redaxo resources.",
   "keywords": [
     "basecondition",
-    "base"
+    "components"
   ],
   "homepage": "http://basecondition.com",
   "authors": [
@@ -25,6 +25,7 @@
     "jms/serializer": "^3.29.1",
     "symfony/validator": "^v6.3.5",
     "laminas/laminas-diactoros": "^3.3.0",
-    "doctrine/annotations": "^1.14.0"
+    "doctrine/annotations": "^1.14.0",
+    "doctrine/orm": "^2.17"
   }
 }

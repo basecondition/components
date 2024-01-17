@@ -271,6 +271,13 @@ bsc_password_passwordresetset:
     defaults:
         _controller: bsc.controller.password:passwordResetSetAction
 
+# permission
+bsc_permission_getpermissions:
+    path:     /permissions
+    methods:  [GET]
+    defaults:
+        _controller: bsc.controller.permission:getPermissionsAction
+
 # registration
 bsc_registration_createmember:
     path:     /register

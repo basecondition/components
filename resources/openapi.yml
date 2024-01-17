@@ -10,6 +10,8 @@ tags:
     description: API heartbeat for health monitoring
   - name: token
     description: OAuth2 token and refresh token
+  - name: permission
+    description: roles and permission management
   - name: registration
     description: member registration
   - name: password
@@ -51,8 +53,8 @@ paths:
           $ref: '#/responses/401'
         204:
           description: All is fine
-#      security:
-#        - oAuth2: []
+      security:
+        - oAuth2: []
   /token:
     post:
       tags:
@@ -120,7 +122,7 @@ paths:
           schema:
             $ref: '#/definitions/success'
       security:
-        - oAuth2: [read]
+        - oAuth2: []
   /register:
     post:
       tags:
@@ -195,6 +197,28 @@ paths:
           description: Verify tan was sended
       security:
         - apiKey: []
+  /permissions:
+    get:
+      tags:
+        - permission
+      summary: Get list of permissions
+      operationId: getPermissions
+      produces:
+        - application/json
+      responses:
+        500:
+          $ref: '#/responses/500'
+        401:
+          $ref: '#/responses/401'
+        200:
+          description: member timeline
+          schema:
+            type: array
+            description: mixed content (milestones, events, consulting dates ordered by timestamp)
+            items:
+              $ref: '#/definitions/permission'
+      security:
+        - oAuth2: [read]
   /member:
     get:
       tags:
