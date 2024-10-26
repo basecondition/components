@@ -9,6 +9,5 @@ requires:
     definitions: "^1.0.0"
     yform: "^4.1.0"
     ycom: "^4.2.0"
-    yrewrite: "^2.10.0"
   php:
     version: "^8.1"

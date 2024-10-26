@@ -28,7 +28,7 @@ class listener
 
     public static function registerListener(?array $listener = []): void
     {
-        if (sizeof($listener) > 0) {
+        if (!empty($listener)) {
             foreach ($listener as $item) {
                 if (!isset($item['tags']) || !is_array($item['tags']) || sizeof($item['tags']) <= 0) continue; // continue if no tags exist
                 foreach ($item['tags'] as $tag) {
